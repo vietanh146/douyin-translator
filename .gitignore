@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+
+# Environment / API key
+.env
+
+# Generated output
+output/
+
+# Input videos
+input/*.mp4
+input/*.mov
+input/*.mkv
+input/*.avi
+
+# Model files
+*.pt
+*.pth
+*.onnx
+
+# Test generated files
+test/data/*.mp4
+test/data/*.json
+test/data/*.txt
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
