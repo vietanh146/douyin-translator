@@ -191,24 +191,6 @@ Do not manually edit drawtext_render/, because those files are generated again d
 
 This allows subtitle corrections without consuming additional Gemini translation requests.
 
-🧪 Testing
-
-The project contains tests for the main components and processing pipeline.
-
-Example:
-
-python -m test.test_video_pipeline
-
-Other tests cover:
-
-OCR
-Video OCR
-Text tracking
-Text filtering
-Text normalization
-Translation
-Translation cache
-Subtitle rendering
 📌 Current Limitations
 
 The current MVP focuses on visual Chinese text translation.
