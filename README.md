@@ -1,81 +1,42 @@
 # Douyin Translator
 
-A Python-based tool that detects Chinese text in Douyin videos, translates it into Vietnamese using Google Gemini, and renders Vietnamese subtitles directly onto the video.
+A Python-based tool that detects Chinese text in Douyin videos, translates it into Vietnamese using Google Gemini, and renders the translated subtitles directly onto the video.
 
-> **Current version:** `v1.0.0`
+> **Version:** `v1.0.0`  
 > **Status:** MVP
 
 ## ✨ Features
 
-* 🔍 **Chinese OCR**
+- 🔍 Chinese text detection with PaddleOCR
+- 🧠 Text tracking, filtering, normalization, and merging
+- 🤖 Vietnamese translation using Google Gemini
+- ⚡ Batch translation with translation cache
+- 🎬 Automatic masking of original Chinese text
+- 📝 Vietnamese subtitle rendering with automatic text wrapping and resizing
+- 🔊 Preserves the original video's audio
+- 🔄 Re-render subtitles without running OCR or translation again
+- 🪟 Windows `.bat` launcher
 
-  * Detect Chinese text directly from video frames.
-  * Track text regions across frames.
-  * Filter low-quality and irrelevant OCR results.
-  * Normalize and merge detected text regions.
-
-* 🤖 **AI Translation**
-
-  * Translate Chinese text into Vietnamese using Google Gemini.
-  * Batch translation for better efficiency.
-  * Translation cache to avoid translating the same text repeatedly.
-
-* 🎬 **Subtitle Rendering**
-
-  * Automatically cover the original Chinese text.
-  * Render Vietnamese translations into the detected text regions.
-  * Automatically wrap and resize text to fit the available area.
-  * Preserve the original video's audio.
-
-* 🛠️ **Pipeline**
-
-  * Complete OCR → Translation → Subtitle → Rendering pipeline.
-  * Re-render existing translation data without running OCR or translation again.
-  * Windows `.bat` launcher for easier execution.
-
-## 🧩 Pipeline
+## 🔄 Pipeline
 
 ```text
 Douyin Video
-     │
-     ▼
-┌─────────────┐
-│   PaddleOCR │
-│ Chinese OCR │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Text Tracker│
-│   Filter    │
-│  Normalize  │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Google      │
-│ Gemini API  │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Drawbox     │
-│ Drawtext    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│    FFmpeg   │
-└──────┬──────┘
-       │
-       ▼
- Vietnamese
- Subtitled Video
-```
+     ↓
+PaddleOCR
+     ↓
+Text Tracking / Filtering
+     ↓
+Gemini Translation
+     ↓
+Subtitle Generation
+     ↓
+Drawbox + Drawtext
+     ↓
+FFmpeg
+     ↓
+Vietnamese Subtitled Video
 
-## 📁 Project Structure
-
-```text
+📁 Project Structure
 douyin-translator/
 │
 ├── main.py
@@ -109,204 +70,137 @@ douyin-translator/
 ├── audio/
 │   └── speech_to_text.py
 │
-├── input/
-│
-├── output/
-│
 └── test/
-```
 
-## ⚙️ Requirements
+audio/ is reserved for future audio-related features and is not part of the current MVP.
 
-### Operating System
+⚙️ Requirements
+Windows 10 / 11
+Python 3.11.x
+FFmpeg
+Google Gemini API key
 
-* Windows 10 / 11
+Python dependencies are listed in requirements.txt.
 
-### Python
-
-* Python `3.11.x`
-
-### Main Dependencies
-
-* Python
-* PaddleOCR
-* PaddlePaddle
-* Google Gemini API
-* OpenCV
-* Pillow
-* FFmpeg
-* python-dotenv
-
-## 🚀 Installation
-
-### 1. Clone the repository
-
-```bash
+🚀 Installation
+1. Clone the repository
 git clone https://github.com/vietanh146/douyin-translator.git
 cd douyin-translator
-```
-
-### 2. Create a virtual environment
-
-```powershell
+2. Create a virtual environment
 py -3.11 -m venv .venv
-```
-
-Activate it:
-
-```powershell
 .venv\Scripts\activate
-```
-
-### 3. Install dependencies
-
-```powershell
+3. Install dependencies
 pip install -r requirements.txt
-```
+4. Configure FFmpeg
 
-### 4. Install FFmpeg
+Set the FFmpeg path in config.py:
 
-Download and install FFmpeg, then make sure the executable path matches the configuration in:
+FFMPEG_PATH = r"D:\Tools\ffmpeg\bin\ffmpeg.exe"
 
-```text
-config.py
-```
+Change this path if FFmpeg is installed elsewhere.
 
-The current configuration uses:
+🔑 Gemini API Key
 
-```text
-D:\Tools\ffmpeg\bin\ffmpeg.exe
-```
+Create a .env file in the project root:
 
-If FFmpeg is installed somewhere else, update `FFMPEG_PATH` in `config.py`.
-
-## 🔑 Gemini API Key
-
-The translation step requires a Google Gemini API key.
-
-Create a `.env` file in the project root:
-
-```env
 GEMINI_API_KEY=your_api_key_here
-```
 
-The `.env` file is intentionally excluded from Git through `.gitignore`.
+▶️ Usage
+Using run.bat
 
-> Never commit your API key to GitHub.
+Run:
 
-## ▶️ Usage
-
-### Using `run.bat`
-
-The easiest way to run the application is:
-
-```text
 run.bat
-```
 
-The launcher provides the available processing options.
+The launcher starts the processing workflow.
 
-The main pipeline is:
-
-```text
-Video
-  ↓
-OCR
-  ↓
-Gemini Translation
-  ↓
-Subtitle Generation
-  ↓
-FFmpeg Rendering
-  ↓
-Translated Video
-```
-
-### Using Python directly
-
-You can also run:
-
-```powershell
+Using Python directly
 python main.py
-```
 
-Then provide the path to the input video when prompted.
+Then enter the path to the video when prompted.
 
-## 📂 Output
+You can also provide the video path directly:
 
-Each processed video gets its own project directory under `output/`.
+python main.py path\to\video.mp4
+📂 Output
+
+Each video gets its own directory under output/.
 
 Example:
 
-```text
 output/
 └── cat01/
     ├── ocr.json
     ├── translated.json
-    │
     ├── drawtext/
     │   ├── text_000.txt
+    │   ├── text_001.txt
     │   └── ...
-    │
     ├── drawtext_render/
-    │   ├── text_000.txt
-    │   └── ...
-    │
     ├── drawbox_filter.txt
     ├── drawtext_filter.txt
-    │
     └── cat01_translated.mp4
-```
 
-### Intermediate files
+The output/ directory is generated automatically and is not included in the repository.
 
-The generated files are intentionally kept so that individual stages can be inspected or re-rendered without repeating the entire pipeline.
+✏️ Manual Subtitle Editing
+
+One useful feature of the project is the ability to manually correct subtitles before rendering.
+
+After translation, Vietnamese subtitle text is stored in:
+
+output/<video_name>/drawtext/
 
 For example:
 
-```text
-ocr.json
-```
+output/
+└── cat01/
+    └── drawtext/
+        ├── text_000.txt
+        ├── text_001.txt
+        └── text_002.txt
 
-contains detected text regions.
+You can open and edit these files directly.
 
-```text
-translated.json
-```
+For example:
 
-contains the Vietnamese translations.
+Original:
+Tôi đã ăn rất no rồi
 
-```text
-drawbox_filter.txt
-```
+Edited:
+Tôi no rồi :v
 
-contains the FFmpeg filter used to cover the original text.
+After editing, render the video again:
 
-```text
-drawtext_filter.txt
-```
+python main.py path\to\video.mp4 --render
 
-contains the FFmpeg filter used to render the Vietnamese subtitles.
+This does not run OCR or Gemini translation again.
 
-## 🔄 Re-render Existing Translation
+drawtext/
+     ↓
+DrawTextRenderer
+     ↓
+drawtext_render/
+     ↓
+FFmpeg
+     ↓
+Translated Video
 
-If OCR and translation have already been completed, the existing translation can be rendered again without repeating those steps.
+Important: Edit files inside drawtext/.
+Do not manually edit drawtext_render/, because those files are generated again during rendering.
+
+This allows subtitle corrections without consuming additional Gemini translation requests.
+
+🧪 Testing
+
+The project contains tests for the main components and processing pipeline.
 
 Example:
 
-```powershell
-python main.py path\to\video.mp4 --render
-```
+python -m test.test_video_pipeline
 
-This is useful when adjusting subtitle rendering without consuming additional translation requests.
+Other tests cover:
 
-## 🧪 Testing
-
-The project contains tests for individual components and pipeline stages.
-
-Examples include:
-
-```text
 OCR
 Video OCR
 Text tracking
@@ -315,79 +209,35 @@ Text normalization
 Translation
 Translation cache
 Subtitle rendering
-Video pipeline
-```
+📌 Current Limitations
 
-Run the relevant test scripts from the project root.
+The current MVP focuses on visual Chinese text translation.
 
-Example:
+Not implemented yet:
 
-```powershell
-python -m test.test_video_pipeline
-```
+❌ Speech-to-text
+❌ Audio translation
+❌ Automatic voice dubbing
+❌ GUI
+❌ Standalone .exe
+❌ Automatic Douyin URL downloading
+🗺️ Future Development
 
-## 📌 Current Limitations
+Possible future improvements:
 
-This project is currently focused on **visual Chinese text translation**.
+ GUI
+ Better OCR filtering
+ Watermark detection
+ Subtitle customization
+ Performance optimization
+ Speech-to-text
+ Audio translation
+ Voice generation
+ Standalone executable
+👤 Author
 
-The following features are **not implemented yet**:
+Viet Anh
 
-* ❌ Speech-to-text subtitles
-* ❌ Audio translation
-* ❌ Automatic voice dubbing
-* ❌ Full GUI application
-* ❌ Standalone `.exe` distribution
-* ❌ Automatic Douyin downloading from URL
+GitHub: vietanh146
 
-The `audio/` directory is reserved for future development and does not represent a currently implemented audio translation feature.
-
-## 🗺️ Roadmap
-
-### v1.0.0
-
-* [x] Chinese OCR
-* [x] Text tracking
-* [x] OCR filtering
-* [x] Text normalization
-* [x] Gemini translation
-* [x] Translation cache
-* [x] Vietnamese subtitle rendering
-* [x] Original text masking
-* [x] FFmpeg rendering
-* [x] End-to-end pipeline
-* [x] Windows launcher
-
-### Future
-
-* [ ] GUI
-* [ ] Subtitle customization
-* [ ] Better OCR filtering
-* [ ] Watermark detection/filtering
-* [ ] Performance optimization
-* [ ] Speech-to-text
-* [ ] Audio translation
-* [ ] Voice generation
-* [ ] Standalone executable
-* [ ] More input sources
-
-## 🤝 Contributing
-
-Contributions, ideas, bug reports, and improvements are welcome.
-
-If you find a bug or have an idea for a new feature, feel free to open an issue.
-
-## 📄 License
-
-License information will be added in a future release.
-
-## 👤 Author
-
-**Viet Anh**
-
-GitHub:
-
-https://github.com/vietanh146
-
-Project:
-
-https://github.com/vietanh146/douyin-translator
+Project: douyin-translator
